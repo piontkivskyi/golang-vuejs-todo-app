@@ -12,12 +12,12 @@ export default {
       .catch((error) => Promise.reject(error))
   },
   put (url, request) {
-    return Vue.$http.put(url, request)
+    return Vue.http.put(url, request)
       .then((response) => Promise.resolve(response))
       .catch((error) => Promise.reject(error))
   },
   delete (url, request) {
-    return Vue.$http.delete(url, request)
+    return Vue.http.delete(url, request)
       .then((response) => Promise.resolve(response))
       .catch((error) => Promise.reject(error))
   }

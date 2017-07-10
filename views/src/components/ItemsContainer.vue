@@ -1,8 +1,7 @@
 <template>
     <div class="items-container col-md-12">
       <ul class="list-group">
-        <li v-for="item in items"
-          :key="item.ID"
+        <li v-for="item in items" :key="item.ID"
           v-bind:class="{'list-group-item-success': item.isReady}"
           class="list-group-item">
           <span v-text="item.name"></span>
@@ -16,48 +15,24 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+
   export default {
     computed: {
-      items: function () {
-        return this.$store.items
-      }
+      ...mapState({
+        items: state => state.items.items
+      })
     },
     methods: {
       deleteItem: function (id) {
-        var url = "/api/tasks/" + id
-        this.$http.delete(url).then(
-          (res) => {
-            this.$parent.items.forEach((item, i) => {
-              if (item.ID == id) {
-                this.$parent.items.splice(i, 1)
-              }
-            })
-          },
-          (err) => {
-            alert('Error while deleting item')
-          }
-        ).bind(this)
+        this.$store.dispatch('deleteTodo', id)
       },
       toogleCompletion: function (item) {
-        var id = item.ID
-        var url = "/api/tasks/" + id
-        this.$http.post(url, {name: item.name, isReady: !item.isReady})
-          .then(
-            (res) => {
-              this.$parent.items.forEach((item, i) => {
-                if (item.ID == id) {
-                  this.$parent.items.splice(i, 1, res.body)
-                }
-              })
-            },
-            (err) => {
-              alert('Error')
-            }
-          )
+        this.$store.dispatch('updateTodo', item)
       }
     },
     beforeCreate: function () {
-      this.$store.dispatch('getTodos').then(() => { this.$forceUpdate(); })
+      this.$store.dispatch('getTodos')
     }
   }
 </script>
