@@ -12,7 +12,6 @@
 
 <script>
   export default {
-    props: ['items'],
     data: function () {
       return {
         newItem: ''
@@ -20,18 +19,7 @@
     },
     methods: {
       addItem: function() {
-        this.$http
-          .post('/api/tasks', {name: this.newItem})
-          .then(
-            function (res) {
-              // success callback
-              var body = res.body
-              this.$parent.items.push(body)
-            },
-            function (err) {
-              alert('Error while addong task occured')
-            }
-          ).bind(this);
+        this.$store.dispatch('addTodo', this.newItem)
         this.newItem = ''
       }
     }

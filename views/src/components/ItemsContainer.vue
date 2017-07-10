@@ -17,7 +17,11 @@
 
 <script>
   export default {
-    props: ['items'],
+    computed: {
+      items: function () {
+        return this.$store.items
+      }
+    },
     methods: {
       deleteItem: function (id) {
         var url = "/api/tasks/" + id
@@ -53,11 +57,7 @@
       }
     },
     beforeCreate: function () {
-      this.$http.get('/api/tasks').then(function(response) {
-        response.body.forEach((item) => {
-          this.$parent.items.push(item)
-        })
-      }).bind(this)
+      this.$store.dispatch('getTodos').then(() => { this.$forceUpdate(); })
     }
   }
 </script>
