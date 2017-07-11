@@ -2,12 +2,14 @@ package main
 
 import (
 	"todo-app/controllers"
+	"todo-app/middlewares"
 	"todo-app/models"
 	"todo-app/models/connection"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -41,12 +43,19 @@ func initConnection() {
 }
 
 func initRoutes(e *echo.Echo) {
+	// config for middleware
+	config := middleware.JWTConfig{
+		Claims:     &middlewares.JwtCustomClaims{},
+		SigningKey: []byte("get from env in future"),
+	}
+	restricted := middleware.JWTWithConfig(config)
 	e.Static("/", "views")
-	e.GET("/api/tasks", controllers.GetTasks)
-	e.GET("/api/tasks/:id", controllers.GetTask)
-	e.POST("/api/tasks", controllers.CreateTask)
-	e.POST("/api/tasks/:id", controllers.UpdateTask)
-	e.DELETE("/api/tasks/:id", controllers.DeleteTask)
+	e.POST("/api/login", controllers.GetToken)
+	e.GET("/api/tasks", controllers.GetTasks, restricted)
+	e.GET("/api/tasks/:id", controllers.GetTask, restricted)
+	e.POST("/api/tasks", controllers.CreateTask, restricted)
+	e.POST("/api/tasks/:id", controllers.UpdateTask, restricted)
+	e.DELETE("/api/tasks/:id", controllers.DeleteTask, restricted)
 	// return index while other routes not matching
 	e.Static("/dist", "./views/dist")
 	e.File("*", "./views")

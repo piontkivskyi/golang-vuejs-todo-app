@@ -1,5 +1,6 @@
 import * as types from '../mutation-types'
 import api from '../utils/api'
+import Noty from 'noty';
 
 const state = {
   items: []
@@ -34,7 +35,11 @@ const actions = {
       .then((response) => {
           context.commit(types.DELETE_TODO_ITEM, id)
       })
-      .catch((error) => {})
+      .catch((error) => {
+        new Noty({
+            text: 'Some notification text',
+        }).show();
+      })
   }
 };
 

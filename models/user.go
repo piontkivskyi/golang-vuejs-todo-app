@@ -10,6 +10,7 @@ type User struct {
 	Email    string
 	Type     int
 	Tasks    []Task `gorm:"ForeignKey:UserID"`
+	Password string
 }
 
 const (
