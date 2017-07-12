@@ -46,6 +46,8 @@ const actions = {
 const mutations = {
   [types.GET_ALL_ITEMS]: function (state, items) {
     if (items) {
+      // clear up
+      state.items = []
       items.forEach(item => state.items.push(item))
     }
   },
