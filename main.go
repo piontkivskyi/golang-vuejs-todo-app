@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"todo-app/controllers"
 	"todo-app/middlewares"
 	"todo-app/models"
@@ -40,17 +41,30 @@ func initConnection() {
 	con.AutoMigrate(&models.Task{}, &models.User{})
 
 	connection.DB = con
+
+	migrateUser()
+}
+
+func migrateUser() {
+	user := models.User{
+		Name:     "Test User",
+		Username: "admin",
+		Password: "admin"}
+
+	if res := connection.DB.Create(&user); res.Error != nil {
+		panic(res.Error)
+	}
 }
 
 func initRoutes(e *echo.Echo) {
 	// config for middleware
 	config := middleware.JWTConfig{
 		Claims:     &middlewares.JwtCustomClaims{},
-		SigningKey: []byte("get from env in future"),
+		SigningKey: []byte(os.Getenv("SECRET_KEY")),
 	}
 	restricted := middleware.JWTWithConfig(config)
 	e.Static("/", "views")
-	e.POST("/api/login", controllers.GetToken)
+	e.POST("/api/token", controllers.GetToken)
 	e.GET("/api/tasks", controllers.GetTasks, restricted)
 	e.GET("/api/tasks/:id", controllers.GetTask, restricted)
 	e.POST("/api/tasks", controllers.CreateTask, restricted)

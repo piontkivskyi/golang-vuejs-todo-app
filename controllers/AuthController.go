@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"os"
 	"time"
 	"todo-app/middlewares"
 	"todo-app/models"
@@ -38,7 +39,7 @@ func GetToken(c echo.Context) error {
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 		// Generate encoded token and send it as response.
-		t, err := token.SignedString([]byte("get from env in future"))
+		t, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 		if err != nil {
 			return err
 		}
