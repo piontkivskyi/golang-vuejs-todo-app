@@ -3,14 +3,19 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"todo-app/middlewares"
 	"todo-app/models"
 	"todo-app/models/connection"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 )
 
 // GetTasks returns list of all tasks
 func GetTasks(c echo.Context) error {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*middlewares.JwtCustomClaims)
+	userID := claims.UserID
 	tasks := []models.Task{}
 
 	var (
@@ -26,7 +31,7 @@ func GetTasks(c echo.Context) error {
 		query.Limit(perPage).Offset((page - 1) * perPage)
 	}
 
-	if res := query.Find(&tasks); res.Error != nil {
+	if res := query.Where(models.Task{UserID: userID}).Find(&tasks); res.Error != nil {
 		return c.JSON(http.StatusInternalServerError, res.Error)
 	}
 
@@ -35,11 +40,15 @@ func GetTasks(c echo.Context) error {
 
 // CreateTask get task info and save new Task
 func CreateTask(c echo.Context) error {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*middlewares.JwtCustomClaims)
+	userID := claims.UserID
 	task := models.Task{}
 
 	if err := c.Bind(&task); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
+	task.UserID = userID
 
 	if res := connection.DB.Create(&task); res.Error != nil {
 		return c.JSON(http.StatusInternalServerError, res.Error)
@@ -52,6 +61,9 @@ func CreateTask(c echo.Context) error {
 func UpdateTask(c echo.Context) error {
 	// get id from url
 	var taskID, err = strconv.Atoi(c.Param("id"))
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*middlewares.JwtCustomClaims)
+	userID := claims.UserID
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
@@ -65,6 +77,7 @@ func UpdateTask(c echo.Context) error {
 	if err := c.Bind(&task); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
+	task.UserID = userID
 	// try to save
 	if res := connection.DB.Save(&task); res.Error != nil {
 		return c.JSON(http.StatusInternalServerError, res.Error)
