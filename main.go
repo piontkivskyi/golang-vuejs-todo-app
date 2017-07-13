@@ -4,56 +4,18 @@ import (
 	"os"
 	"todo-app/controllers"
 	"todo-app/middlewares"
-	"todo-app/models"
 	"todo-app/models/connection"
 
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	log "github.com/sirupsen/logrus"
 )
 
-var connectionString = "root:root@tcp(localhost:3306)/todoapp?charset=utf8&parseTime=true"
-
 func main() {
-	initConnection()
+	connection.InitConnection()
 	e := echo.New()
 	initRoutes(e)
 	e.Start(":1234")
 	defer connection.DB.Close()
-}
-
-func initConnection() {
-	con, err := gorm.Open("mysql", connectionString)
-	if err != nil {
-		log.Error(err.Error())
-		panic(err)
-	}
-
-	// check if connection was really opened
-	er := con.DB().Ping()
-	if er != nil {
-		panic(er)
-	}
-
-	con.DropTableIfExists(&models.Task{}, &models.User{})
-	con.AutoMigrate(&models.Task{}, &models.User{})
-
-	connection.DB = con
-
-	migrateUser()
-}
-
-func migrateUser() {
-	user := models.User{
-		Name:     "Test User",
-		Username: "admin",
-		Password: "admin"}
-
-	if res := connection.DB.Create(&user); res.Error != nil {
-		panic(res.Error)
-	}
 }
 
 func initRoutes(e *echo.Echo) {
