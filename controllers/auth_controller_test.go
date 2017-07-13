@@ -33,6 +33,6 @@ func TestGetToken(t *testing.T) {
 
 	if assert.NoError(t, GetToken(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
-		// assert.NotEmpty(t, rec.Result().token)
+		assert.NotEmpty(t, rec.Result())
 	}
 }
