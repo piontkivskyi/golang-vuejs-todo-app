@@ -4,29 +4,31 @@
       <div class="navbar-header">
         <a class="navbar-brand" href="#">Todo App</a>
       </div>
-
-      <p v-if="isLogged" class="navbar-text navbar-right">
-        Hello!
-      </p>
-      <div v-else class="navbar-form navbar-right">
-        <div class="form-group">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Username"
-            v-model="userName">
+      <div class="collapse navbar-collapse">
+        <p v-if="isLogged" class="navbar-text navbar-right">
+          Hello!
+          <a href="#" @click="logout">Log Out</a>
+        </p>
+        <div v-else class="navbar-form navbar-right">
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Username"
+              v-model="userName">
+          </div>
+          <div class="form-group">
+            <input
+              type="password"
+              class="form-control"
+              placeholder="Password"
+              v-model="pass">
+          </div>
+          <button type="submit" class="btn btn-default" @click="login">
+            Submit
+          </button>
         </div>
-        <div class="form-group">
-          <input
-            type="password"
-            class="form-control"
-            placeholder="Password"
-            v-model="pass">
-        </div>
-        <button type="submit" class="btn btn-default" @click="login">
-          Submit
-        </button>
-      </div>
+    </div>
     </div>
 </nav>
 </template>
@@ -51,6 +53,9 @@ export default {
       fd.append('username', this.userName)
       fd.append('password', this.pass)
       this.$store.dispatch('getToken', fd);
+    },
+    logout: function () {
+      this.$store.dispatch('logout')
     }
   },
   beforeCreate: function () {

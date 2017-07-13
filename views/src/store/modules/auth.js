@@ -28,12 +28,20 @@ const actions = {
       context.commit(types.SET_LOGGED_IN)
       context.dispatch('getTodos')
     }
+  },
+  logout: function (context) {
+    window.localStorage.removeItem('todo-app-storage')
+    context.commit(types.SET_LOGGED_OUT)
+    context.commit(types.CLEAR_ALL_ITEMS)
   }
 };
 
 const mutations = {
   [types.SET_LOGGED_IN]: function (state) {
     state.isLogged = true
+  },
+  [types.SET_LOGGED_OUT]: function (state) {
+    state.isLogged = false
   }
 };
 

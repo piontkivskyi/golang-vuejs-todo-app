@@ -1,3 +1,4 @@
+export const CLEAR_ALL_ITEMS = 'CLEAR_ALL_ITEMS';
 export const GET_ALL_ITEMS = 'GET_ALL_ITEMS';
 export const ADD_TODO_ITEM = 'ADD_TODO_ITEM';
 export const DELETE_TODO_ITEM = 'DELETE_TODO_ITEM';

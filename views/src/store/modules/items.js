@@ -7,6 +7,9 @@ const state = {
 };
 
 const actions = {
+  clearItems: function (context) {
+
+  },
   getTodos: function (context) {
     return api.get('/api/tasks')
       .then((response) => {
@@ -44,6 +47,9 @@ const actions = {
 };
 
 const mutations = {
+  [types.CLEAR_ALL_ITEMS]: function (state) {
+    state.items = []
+  },
   [types.GET_ALL_ITEMS]: function (state, items) {
     if (items) {
       // clear up
