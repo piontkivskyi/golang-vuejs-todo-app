@@ -9,10 +9,12 @@ import (
 )
 
 var (
+	// DB variable for usage in controllers/models
 	DB               *gorm.DB
 	connectionString = "root:root@tcp(localhost:3306)/todoapp?charset=utf8&parseTime=true"
 )
 
+//InitConnection setup DB var
 func InitConnection() {
 	con, err := gorm.Open("mysql", connectionString)
 	if err != nil {
@@ -26,7 +28,7 @@ func InitConnection() {
 		panic(er)
 	}
 
-	con.DropTableIfExists(&models.Task{}, &models.User{})
+	//con.DropTableIfExists(&models.Task{}, &models.User{})
 	con.AutoMigrate(&models.Task{}, &models.User{})
 
 	DB = con

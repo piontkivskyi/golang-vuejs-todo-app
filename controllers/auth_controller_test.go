@@ -14,11 +14,9 @@ import (
 	"github.com/labstack/echo"
 )
 
-func init() {
-	connection.InitConnection()
-}
-
+// Try to get token
 func TestGetToken(t *testing.T) {
+	connection.InitConnection()
 	defer connection.DB.Close()
 	// Setup
 	e := echo.New()
